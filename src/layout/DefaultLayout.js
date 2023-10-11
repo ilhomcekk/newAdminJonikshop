@@ -1,24 +1,23 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getLogin } from 'src/redux/actions/authActions'
+import { getProfile } from 'src/redux/actions/authActions'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
 
 const DefaultLayout = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const token = window.localStorage.getItem('madadToken')
+  const token = localStorage.getItem('jonikshopAccessToken')
 
   useEffect(() => {
-    dispatch(getLogin({ token: token }))
+    dispatch(getProfile())
   }, [])
 
-  const success = useSelector((state) => state.auth.success)
   useEffect(() => {
-    if (success === false || success === undefined) {
+    if (!token) {
       navigate('/login')
     }
-  }, [success])
+  }, [token])
 
   return (
     <div>

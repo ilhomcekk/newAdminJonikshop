@@ -1,13 +1,11 @@
-const INITIAL_STATE = {
-  profile: {},
-}
+const INITIAL_STATE = { transactionAdmin: [] }
 
 export default (state = INITIAL_STATE, { type, payload, ...rest }) => {
   switch (type) {
-    case 'get_profile':
+    case 'get_transaction_admin':
       return {
         ...state,
-        profile: payload,
+        transactionAdmin: payload,
       }
 
     default:

@@ -16,14 +16,15 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { postRegister, postSignIn, setSuccess } from 'src/redux/actions/authActions'
+import { getProfile, postRegister, postSignIn, setSuccess } from 'src/redux/actions/authActions'
 import { toast } from 'react-toastify'
+import { setToken } from 'src/helpers/token'
 
 const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [params, setParams] = useState({
-    name: '',
+    phone_number: '',
     password: '',
   })
 
@@ -37,17 +38,23 @@ const Login = () => {
     })
   }
 
-  const { success } = useSelector((state) => state.auth)
-
-  useEffect(() => {
-    if (success === true) {
-      navigate('/dashboard')
-      toast.success('Успешно')
-    }
-    if (success === false) {
-      toast.error('Логин/пароль неверно')
-    }
-  }, [success])
+  const handleSubmit = async () => {
+    await postSignIn(params)
+      .then((response) => {
+        if (response?.data?.error) {
+          toast.error(response?.data?.error)
+        }
+        setToken(response.data)
+        dispatch(getProfile())
+        navigate('/dashboard')
+      })
+      .catch(({ response }) => {
+        if (response?.data)
+          for (const [key, value] of Object.entries(response?.data)) {
+            toast.error(`${key}: ${value}`)
+          }
+      })
+  }
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -59,18 +66,19 @@ const Login = () => {
                 <CCardBody>
                   <CForm>
                     <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <p className="text-medium-emphasis">Akkauntingizga kiring</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
                         onChange={handleLogin}
-                        name="name"
+                        name="phone_number"
                         value={params.name}
                         required
-                        placeholder="Username"
-                        autoComplete="username"
+                        type="tel"
+                        placeholder="Telefon raqamingiz"
+                        autoComplete="phone_number"
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -89,12 +97,17 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
+                        <CButton onClick={handleSubmit} color="primary" className="px-4">
+                          Login
+                        </CButton>
+                      </CCol>
+                      <CCol xs={6}>
                         <CButton
-                          onClick={() => dispatch(postSignIn(params))}
+                          onClick={() => navigate('/register')}
                           color="primary"
                           className="px-4"
                         >
-                          Login
+                          Ro`yhatdan o`tish
                         </CButton>
                       </CCol>
                       {/* <CCol xs={6} className="text-right">
@@ -106,10 +119,10 @@ const Login = () => {
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+              <CCard className="text-white bg-primary py-5">
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Madad service</h2>
+                    <h2>Jonikshop</h2>
                     <p>
                       Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                       tempor incididunt ut labore et dolore magna aliqua.

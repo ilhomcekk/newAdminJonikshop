@@ -1,13 +1,19 @@
 const INITIAL_STATE = {
-  profile: {},
+  orders: [],
+  orderStatisctics: [],
 }
 
 export default (state = INITIAL_STATE, { type, payload, ...rest }) => {
   switch (type) {
-    case 'get_profile':
+    case 'get_orders':
       return {
         ...state,
-        profile: payload,
+        orders: payload,
+      }
+    case 'get_order_statistic':
+      return {
+        ...state,
+        orderStatisctics: payload,
       }
 
     default:

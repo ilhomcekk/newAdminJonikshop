@@ -37,15 +37,6 @@ const Account = () => {
     })
   }
 
-  const { step } = useSelector((state) => state.auth)
-
-  useEffect(() => {
-    if (step === true) {
-      navigate('/dashboard')
-      toast.update('Успешно изменено')
-    }
-  }, [step])
-
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -86,11 +77,7 @@ const Account = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton
-                          onClick={() => dispatch(postUpdateLogin(params))}
-                          color="primary"
-                          className="px-4"
-                        >
+                        <CButton color="primary" className="px-4">
                           Изменить
                         </CButton>
                       </CCol>
